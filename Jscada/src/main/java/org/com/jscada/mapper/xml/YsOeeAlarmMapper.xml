@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="org.com.jscada.mapper.YsOeeAlarmMapper">
+
+	<select id="alarmInformationRanking" resultType="Map">
+		SELECT
+		a.tm_mach_id,
+		SUM( a.count_time ) AS duration,
+		a.alarm_id,
+		b.alarm_type_tame
+		FROM
+		ys_oee_alarm a
+		LEFT JOIN ys_alarm_type b ON a.alarm_id = b.id
+		WHERE
+		a.statistics_type = 0
+		AND DATE_SUB( CURDATE( ), INTERVAL 7 DAY ) &lt;= date( a.cj_date_end )
+		GROUP BY
+		a.alarm_id ORDER BY duration DESC  LIMIT 5;
+	</select>
+
+</mapper>
